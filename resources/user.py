@@ -64,3 +64,18 @@ class UserResource(Resource):
                 "username": user.username
             }
         return data, HTTPStatus.OK
+
+    def delete(self, username):
+        user = User.get_by_username(username)
+        if user:
+
+            user.delete()
+
+            data = {
+                "id": user.id,
+                "username": user.username,
+                "email": user.email
+            }
+            return data, HTTPStatus.OK
+
+        return {"message": "user not found"}, HTTPStatus.NOT_FOUND
