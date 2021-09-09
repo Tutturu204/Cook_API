@@ -6,14 +6,21 @@ from flask_restful import Api
 from config import Config
 from extensions import db, jwt
 from resources.recipe import RecipeListResource, RecipeResource
-from resources.user import UserListResource, UserResource
-from resources.token import TokenResourse
+from resources.user import UserListResource, UserResource, MeResource
+from resources.token import TokenResourse, RefreshResource, RevokeResource, blacklist
 
 
 def register_extensions(app):
+    db.app = app
     db.init_app(app)
     migrate = Migrate(app, db)
     jwt.init_app(app)
+
+    @jwt.token_in_blacklist_loader
+    def check_if_token_in_blacklist(decrypted_token):
+        jti = decrypted_token["jti"]
+        return jti in blacklist
+
 
 def register_resources(app):
     api = Api(app)
@@ -24,6 +31,9 @@ def register_resources(app):
     api.add_resource(UserListResource, "/users")
     api.add_resource(UserResource, "/users/<string:username>")
     api.add_resource(TokenResourse, "/token")
+    api.add_resource(MeResource, "/me")
+    api.add_resource(RefreshResource, "/refresh")
+    api.add_resource(RevokeResource, "/revoke")
 
 
 def create_app():

@@ -32,6 +32,10 @@ class Recipe(db.Model):
     def get_by_id(cls, recipe_id):
         return cls.query.get(recipe_id)
 
+    @classmethod
+    def get_all_publish(cls):
+        return cls.query.filter_by(is_publish=True).all()
+
     def delete(self):
         db.session.delete(self)
         db.session.commit()

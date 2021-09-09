@@ -9,3 +9,6 @@ class Config:
     SECRET_KEY = "secret-key"
     JWT_ERROR_MESSAGE_KEY = "msg"
 
+
+    JWT_BLACKLIST_ENABLED = True
+    JWT_BLACKLIST_TOKEN_CHECKS = ["access", "refresh"]
